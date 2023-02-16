@@ -17,36 +17,35 @@ public class CreateCategory {
     public static void main(String[] args) {
 
         System.out.print("Введите название категории: ");
-        String inputName = sc.nextLine();
+        String inputCategoryName = sc.nextLine();
 
         TypedQuery<Category> query = manager.createQuery(
                 "select c from Category c where c.name = ?1", Category.class
         );
-        query.setParameter(1, inputName);
+        query.setParameter(1, inputCategoryName);
 
         List<Category> categories = query.getResultList();
         if (!categories.isEmpty()) {
-            System.out.printf("Категория с названием `%s` уже существует", inputName);
+            System.out.printf("Категория с названием `%s` уже существует", inputCategoryName);
             return;
         }
 
         System.out.println("Введите характеристику категории(через запятую): ");
-        String optionsName = sc.nextLine();
-        String[] optionsArr = optionsName.split(", ");
+        String inputOptionsName = sc.nextLine();
+        String[] optionsArr = inputOptionsName.split(", ");
 
         try {
             manager.getTransaction().begin();
 
-            if (inputName != null) {
-                Category category = new Category();
-                category.setName(inputName);
-                manager.persist(category);
-                for (String str : optionsArr) {
-                    Option option = new Option();
-                    option.setCategory(category);
-                    option.setName(str);
-                    manager.persist(option);
-                }
+            Category category = new Category();
+            category.setName(inputCategoryName);
+            manager.persist(category);
+
+            for (String str : optionsArr) {
+                Option option = new Option();
+                option.setCategory(category);
+                option.setName(str);
+                manager.persist(option);
             }
 
             manager.getTransaction().commit();
