@@ -1,4 +1,4 @@
-package dayardiyev.catalog.crud;
+package dayardiyev.catalog.controller;
 
 import dayardiyev.catalog.entity.Category;
 import dayardiyev.catalog.entity.Option;

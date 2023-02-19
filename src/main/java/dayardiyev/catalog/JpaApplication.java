@@ -1,8 +1,8 @@
 package dayardiyev.catalog;
 
-import dayardiyev.catalog.crud.CreateProduct;
-import dayardiyev.catalog.crud.DeleteProduct;
-import dayardiyev.catalog.crud.UpdateProduct;
+import dayardiyev.catalog.controller.CreateProduct;
+import dayardiyev.catalog.controller.DeleteProduct;
+import dayardiyev.catalog.controller.UpdateProduct;
 import dayardiyev.catalog.entity.Category;
 
 import javax.persistence.EntityManager;

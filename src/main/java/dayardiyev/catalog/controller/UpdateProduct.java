@@ -1,10 +1,11 @@
-package dayardiyev.catalog.crud;
+package dayardiyev.catalog.controller;
 
 import dayardiyev.catalog.entity.Option;
 import dayardiyev.catalog.entity.Product;
 import dayardiyev.catalog.entity.Value;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,7 +13,7 @@ public class UpdateProduct {
 
     static final Scanner sc = new Scanner(System.in);
 
-    public static void execute(EntityManager manager){
+    public static void execute(EntityManager manager) {
 
         try {
             manager.getTransaction().begin();
@@ -29,29 +30,33 @@ public class UpdateProduct {
             String updatedPrice = sc.nextLine();
             if (!updatedPrice.equals("")) product.setPrice(Integer.parseInt(updatedPrice));
 
-            List<Value> valueList = product.getValues();
             List<Option> optionList = product.getCategory().getOptions();
 
-            for (int i = 0; i < optionList.size(); i++) {
-                if (i >= valueList.size()) {
-                    System.out.printf("%s [null]: ", optionList.get(i).getName());
+            for (Option option : optionList) {
+
+                TypedQuery<Value> query = manager.createQuery(
+                        "select v from Value v where v.option = ?1 and v.product = ?2", Value.class
+                );
+                query.setParameter(1, option);
+                query.setParameter(2, product);
+
+                List<Value> valueList = query.getResultList();
+                if (!valueList.isEmpty()) {
+                    System.out.printf("%s [%s]: ", option.getName(), valueList.get(0).getValue());
+                    String updatedValue = sc.nextLine();
+                    if (!updatedValue.equals("")) valueList.get(0).setValue(updatedValue);
+                } else {
+                    System.out.printf("%s [null]: ", option.getName());
                     String newValue = sc.nextLine();
                     if (!newValue.equals("")) {
                         Value value = new Value();
                         value.setProduct(product);
-                        value.setOption(optionList.get(i));
+                        value.setOption(option);
                         value.setValue(newValue);
                         manager.persist(value);
                     }
-                } else {
-                    if (optionList.get(i) == valueList.get(i).getOption()) {
-                        System.out.printf("%s [%s]: ", optionList.get(i).getName(), valueList.get(i).getValue());
-                        String updatedValue = sc.nextLine();
-                        if (!updatedValue.equals("")) valueList.get(i).setValue(updatedValue);
-                    }
                 }
             }
-
             manager.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
