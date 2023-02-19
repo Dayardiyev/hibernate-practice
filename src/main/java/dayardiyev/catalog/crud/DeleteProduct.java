@@ -4,19 +4,14 @@ import dayardiyev.catalog.entity.Product;
 import dayardiyev.catalog.entity.Value;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.util.List;
 import java.util.Scanner;
 
 public class DeleteProduct {
 
-    static EntityManagerFactory factory = Persistence.createEntityManagerFactory("main");
-    static EntityManager manager = factory.createEntityManager();
-
     static final Scanner sc = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void execute(EntityManager manager) {
 
         try {
             manager.getTransaction().begin();

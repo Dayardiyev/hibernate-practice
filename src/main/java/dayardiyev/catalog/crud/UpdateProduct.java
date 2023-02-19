@@ -5,19 +5,14 @@ import dayardiyev.catalog.entity.Product;
 import dayardiyev.catalog.entity.Value;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.util.List;
 import java.util.Scanner;
 
 public class UpdateProduct {
 
-    static EntityManagerFactory factory = Persistence.createEntityManagerFactory("main");
-    static EntityManager manager = factory.createEntityManager();
-
     static final Scanner sc = new Scanner(System.in);
 
-    public static void main(String[] args) {
+    public static void execute(EntityManager manager){
 
         try {
             manager.getTransaction().begin();
@@ -38,9 +33,23 @@ public class UpdateProduct {
             List<Option> optionList = product.getCategory().getOptions();
 
             for (int i = 0; i < optionList.size(); i++) {
-                System.out.printf("%s [%s]: ", optionList.get(i).getName(), valueList.get(i).getValue());
-                String updatedValue = sc.nextLine();
-                if (!updatedValue.equals("")) valueList.get(i).setValue(updatedValue);
+                if (i >= valueList.size()) {
+                    System.out.printf("%s [null]: ", optionList.get(i).getName());
+                    String newValue = sc.nextLine();
+                    if (!newValue.equals("")) {
+                        Value value = new Value();
+                        value.setProduct(product);
+                        value.setOption(optionList.get(i));
+                        value.setValue(newValue);
+                        manager.persist(value);
+                    }
+                } else {
+                    if (optionList.get(i) == valueList.get(i).getOption()) {
+                        System.out.printf("%s [%s]: ", optionList.get(i).getName(), valueList.get(i).getValue());
+                        String updatedValue = sc.nextLine();
+                        if (!updatedValue.equals("")) valueList.get(i).setValue(updatedValue);
+                    }
+                }
             }
 
             manager.getTransaction().commit();

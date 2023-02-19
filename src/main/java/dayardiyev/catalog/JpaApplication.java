@@ -15,6 +15,9 @@ import java.util.Scanner;
 public class JpaApplication {
     public static void main(String[] args) {
 
+        EntityManagerFactory factory = Persistence.createEntityManagerFactory("main");
+        EntityManager manager = factory.createEntityManager();
+
         Scanner sc = new Scanner(System.in);
 
         System.out.println("""
@@ -27,8 +30,6 @@ public class JpaApplication {
 
         switch (input) {
             case 1 -> {
-                EntityManagerFactory factory = Persistence.createEntityManagerFactory("main");
-                EntityManager manager = factory.createEntityManager();
                 TypedQuery<Category> query = manager.createQuery(
                         "select c from Category c", Category.class
                 );
@@ -38,10 +39,10 @@ public class JpaApplication {
                 for (Category category : categoryList) {
                     System.out.printf("- %s [%d]\n", category.getName(), category.getId());
                 }
-                CreateProduct.main(null);
+                CreateProduct.execute(manager);
             }
-            case 2 -> UpdateProduct.main(null);
-            case 3 -> DeleteProduct.main(null);
+            case 2 -> UpdateProduct.execute(manager);
+            case 3 -> DeleteProduct.execute(manager);
         }
     }
 }
