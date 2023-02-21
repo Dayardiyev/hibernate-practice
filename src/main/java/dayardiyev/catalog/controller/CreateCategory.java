@@ -16,18 +16,27 @@ public class CreateCategory {
 
     public static void main(String[] args) {
 
-        System.out.print("Введите название категории: ");
-        String inputCategoryName = sc.nextLine();
+        String inputCategoryName;
 
-        TypedQuery<Category> query = manager.createQuery(
-                "select c from Category c where c.name = ?1", Category.class
-        );
-        query.setParameter(1, inputCategoryName);
+        while (true) {
+            System.out.print("Введите название категории: ");
+            inputCategoryName = sc.nextLine();
+            if (inputCategoryName.equals("")) {
+                System.out.println("Название категории не должно быть пустым значением!");
+                continue;
+            }
 
-        List<Category> categories = query.getResultList();
-        if (!categories.isEmpty()) {
-            System.out.printf("Категория с названием `%s` уже существует", inputCategoryName);
-            return;
+            TypedQuery<Category> query = manager.createQuery(
+                    "select c from Category c where c.name = ?1", Category.class
+            );
+            query.setParameter(1, inputCategoryName);
+
+            List<Category> categories = query.getResultList();
+            if (!categories.isEmpty()) {
+                System.out.printf("Категория с названием `%s` уже существует\n", inputCategoryName);
+            } else {
+                break;
+            }
         }
 
         System.out.println("Введите характеристику категории(через запятую): ");

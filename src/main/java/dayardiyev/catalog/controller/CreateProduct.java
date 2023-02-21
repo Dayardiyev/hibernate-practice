@@ -29,7 +29,6 @@ public class CreateProduct {
             System.out.print("Введите стоимость товара: ");
             int productPrice = Integer.parseInt(sc.nextLine());
 
-
             List<Option> options = category.getOptions();
 
             Product product = new Product();
